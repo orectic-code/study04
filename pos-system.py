@@ -3,8 +3,7 @@ import sys
 import datetime
 
 ITEM_MASTAR_CSV_PATH="./item_master.csv"
-RECEIPT_FORDER="./receipt"
-
+RECEIPT_FOLDER="./receipt"
 
 ### 商品クラス
 class Item:
@@ -25,7 +24,7 @@ class Order:
         self.set_datetime()
     
     def set_datetime(self):
-        self.datetime=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.datetime=datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
 
     def add_item_order(self,item_code,item_count):
@@ -40,7 +39,7 @@ class Order:
 # オーダー番号から商品情報を取得する（課題１）
     def get_item_data(self,item_code):
         for m in self.item_master:
-            if item_code==m.item_code:
+            if item_code == m.item_code:
                 return m.item_name,m.price
 
  # オーダー入力　課題２，４
@@ -68,18 +67,20 @@ class Order:
         self.receipt_name="receipt_{}.log".format(self.datetime)
         self.write_receipt("--------------------------------------------")
         self.write_receipt("オーダー登録された商品一覧\n")
-        for item_order, item_count in zip(self.item_order_list,self.item_count_list):
+        for item_order,item_count in zip(self.item_order_list,self.item_count_list):
             result=self.get_item_data(item_order)
-            self.sum_price += result[1]*int(item_count)
-            self.sum_count += int(item_count)
-            receipt_data = "{0}.{2}({1}) : ¥{3:,} {4}個 = ¥{5:,}".format(number,item_order,result[0],result[1],item_count,int(result[1])*int(item_count))
+            self.sum_price+=result[1]*int(item_count)
+            self.sum_count+=int(item_count)
+            receipt_data="{0}.{2}({1}) : ￥{3:,}　{4}個 = ￥{5:,}".format(number,item_order,result[0],result[1],item_count,int(result[1])*int(item_count))
             self.write_receipt(receipt_data)
-            number += 1
+            number+=1
 
     # 合計金額、個数の表示
         self.write_receipt("--------------------------------")
-        self.write_receipt("合計金額:¥{:,} {}個" .format(self.sum_price,self.sum_count))
+        self.write_receipt("合計金額:￥{:,} {}個" .format(self.sum_price, self.sum_count))
 
+
+        
     def input_and_change_money(self):
         if len(self.item_order_list) >= 1:
             while True:
@@ -96,9 +97,9 @@ class Order:
 
     def write_receipt(self,text):
         print(text)
-        with open(RECEIPT_FORDER + "\\" + self.receipt_name,mode="a",encoding="utf-8_sig")as f:
+        with open(RECEIPT_FOLDER  + "//" + self.receipt_name,mode="a",encoding="utf-8_sig") as f:
             f.write(text+"\n")
-
+    
 #mマスタ登録　課題３
 def add_item_master_by_csv(csv_path):
     print("----マスタ登録----")
